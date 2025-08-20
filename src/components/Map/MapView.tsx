@@ -2,20 +2,21 @@ import type { FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import React, { useEffect, useRef, useState } from "react";
+import { API } from "../../http";
+import { useFiltersStore } from "../../store/useFiltersStore";
 import { EnergyClassColors } from "../../types";
+import { normalizeGeoJSON } from "../../utils";
 import Button from "../ui/Button";
 import FiltersPanel from "../ui/FiltersPanel";
 import MapBuildingModal from "./MapBuildingModal";
 import MapControlls from "./MapControlls";
 import MapTopPanel from "./MapTopPanel";
-import { API } from "../../http";
-import { useFiltersStore } from "../../store/useFiltersStore";
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
 const MapView: React.FC = () => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
-  const { buildingType, energyUsage, energyClass } = useFiltersStore();
+  const { buildingType, energyClass } = useFiltersStore();
 
   const map = useRef<mapboxgl.Map | null>(null);
   const api = new API();
@@ -37,34 +38,28 @@ const MapView: React.FC = () => {
     const filters: any[] = ["all"];
 
     if (buildingType.length > 0) {
-      filters.push(["in", ["get", "type"], ["literal", buildingType]]);
+      filters.push(["in", ["get", "sector"], ["literal", buildingType]]);
     }
 
     if (energyClass.length > 0) {
       filters.push([
         "in",
-        ["coalesce", ["get", "energy"], "N"],
+        [
+          "coalesce",
+          ["get", "grade", ["get", "filters", ["get", "building"]]],
+          "N",
+        ],
         ["literal", energyClass],
       ]);
     }
-    // if (energyUsage.length > 0) {
-    //   const buildingTypeFilters = buildingType.map((item) => [
-    //     "all",
-    //     [">=", ["get", "buildingType"], item],
-    //     ["<=", ["get", "buildingType"], item],
-    //   ]);
-    //   filters.push(["any", ...buildingTypeFilters]);
-    // }
-    // if (energyUsage.length > 0) {
-    //   const rangeFilters = energyUsage.map((range) => [
-    //     "all",
-    //     [">=", ["get", "usage"], range.min],
-    //     ["<=", ["get", "usage"], range.max],
-    //   ]);
-    //   filters.push(["any", ...rangeFilters]);
-    // }
+
     map.current!.setFilter("buildings-layer", filters);
   };
+  useEffect(() => {
+    if (!selectedBuilding) return;
+    setFiltersVisible(false);
+  }, [selectedBuilding]);
+
   const toggleFilters = () => {
     setFiltersVisible(!filtersVisible);
     setSelectedBuilding(null);
@@ -73,7 +68,7 @@ const MapView: React.FC = () => {
     const fetch = async () => {
       const data = await api.getAllBuildings();
       if (data) {
-        setBuildingsData(data);
+        setBuildingsData(normalizeGeoJSON(data));
       }
     };
     fetch();
@@ -111,7 +106,11 @@ const MapView: React.FC = () => {
         paint: {
           "fill-extrusion-color": [
             "match",
-            ["coalesce", ["get", "energy"], "N"],
+            [
+              "coalesce",
+              ["get", "grade", ["get", "filters", ["get", "building"]]],
+              "N",
+            ],
             "A",
             EnergyClassColors.A,
             "A+",
@@ -135,10 +134,15 @@ const MapView: React.FC = () => {
           "fill-extrusion-opacity": 0.8,
         },
       });
+
       map.current!.on("click", "buildings-layer", (e) => {
         const feature = e.features?.[0];
         if (feature) {
-          setSelectedBuilding(feature);
+          const building =
+            typeof feature?.properties?.building === "string"
+              ? JSON.parse(feature.properties.building)
+              : feature?.properties?.building;
+          setSelectedBuilding({ ...feature, building });
         }
       });
       map.current!.on("mouseenter", "buildings-layer", () => {
@@ -157,7 +161,7 @@ const MapView: React.FC = () => {
       buildingsData
     );
     addFilters();
-  }, [buildingsData, energyClass, energyUsage]);
+  }, [buildingsData, energyClass, buildingType]);
 
   const toggle3D = () => {
     if (!map.current) return;
@@ -206,13 +210,13 @@ const MapView: React.FC = () => {
       {selectedBuilding && (
         <MapBuildingModal
           props={{
-            energyClass: selectedBuilding.properties.energy || "N",
-            energyUsage: selectedBuilding.properties.energyUsage || 0,
-            buildingType:
-              selectedBuilding.properties.building_type || "residential",
-            coordinates: selectedBuilding.geometry.coordinates[0][0],
+            title: selectedBuilding.building.title,
+            energyClass: selectedBuilding.building.filters.grade || "N",
+            energyUsage: selectedBuilding.energyUsage || 0,
+            buildingType: selectedBuilding.building.filters.sector,
+            address: selectedBuilding.building.address,
             buildingArea: selectedBuilding.properties.area || 0,
-            buildingLink: selectedBuilding.properties.link || "#",
+            buildingLink: selectedBuilding.building.url || "#",
             onClose: () => setSelectedBuilding(null),
           }}
         />

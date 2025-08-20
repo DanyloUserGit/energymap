@@ -9,11 +9,8 @@ export type EnergyClasses =
   | "G"
   | "N";
 export const EnergyClassesMap = ["A", "A+", "B", "C", "D", "E", "F", "G", "N"];
-export type BuildingTypes =
-  | "residential"
-  | "public"
-  | "commercial"
-  | "industrial";
+export type BuildingTypes = "ОСББ" | "Комунальний";
+
 export interface EnergyRange {
   label: string;
   min: number;
@@ -46,10 +43,11 @@ export type FilterState = {
   resetFilters: () => void;
 };
 export interface BuildingModalProps {
+  title: string;
   energyClass: EnergyClasses;
   buildingType: BuildingTypes;
   energyUsage: number;
-  coordinates: number[];
+  address: string;
   buildingArea: number;
   buildingLink: string;
   onClose: () => void;

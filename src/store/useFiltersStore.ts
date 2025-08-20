@@ -13,7 +13,7 @@ export const useFiltersStore = create<FilterState>()(
       buildingType: [],
       energyUsage: [],
       energyClass: [],
-      setBuildingType: (types: BuildingTypes[]) => set({ buildingType: types }),
+      setBuildingType: (buildingType: BuildingTypes[]) => set({ buildingType }),
       setEnergyUsage: (energyUsage: EnergyRange[]) => set({ energyUsage }),
       setEnergyClass: (energyClass: EnergyClasses[]) => set({ energyClass }),
       resetFilters: () =>

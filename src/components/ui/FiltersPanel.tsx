@@ -3,7 +3,7 @@ import {
   EnergyClassesMap,
   type BuildingTypes,
   type EnergyClasses,
-  type EnergyRange,
+  // type EnergyRange,
 } from "./../../types";
 import Button from "./Button";
 import Typography from "./Typoghraphy";
@@ -11,10 +11,10 @@ import Typography from "./Typoghraphy";
 const FiltersPanel = ({ onClose }: { onClose: () => void }) => {
   const {
     buildingType,
-    energyUsage,
+    // energyUsage,
     energyClass,
     setBuildingType,
-    setEnergyUsage,
+    // setEnergyUsage,
     setEnergyClass,
     resetFilters,
   } = useFiltersStore();
@@ -32,13 +32,13 @@ const FiltersPanel = ({ onClose }: { onClose: () => void }) => {
       setBuildingType([...buildingType, val]);
     }
   };
-  const handleEnergyUsage = (val: EnergyRange) => {
-    if (energyUsage.some((item) => item.label === val.label)) {
-      setEnergyUsage(energyUsage.filter((item) => item.label !== val.label));
-    } else {
-      setEnergyUsage([...energyUsage, val]);
-    }
-  };
+  // const handleEnergyUsage = (val: EnergyRange) => {
+  //   if (energyUsage.some((item) => item.label === val.label)) {
+  //     setEnergyUsage(energyUsage.filter((item) => item.label !== val.label));
+  //   } else {
+  //     setEnergyUsage([...energyUsage, val]);
+  //   }
+  // };
 
   return (
     <div className="bg-white p-4 rounded shadow-card w-128 z-50 overflow-y-auto">
@@ -63,45 +63,25 @@ const FiltersPanel = ({ onClose }: { onClose: () => void }) => {
           <div className="my-2">
             <label>
               <input
-                checked={buildingType.includes("residential")}
-                onChange={() => handleBuildingType("residential")}
+                checked={buildingType.includes("Комунальний")}
+                onChange={() => handleBuildingType("Комунальний")}
                 type="checkbox"
               />{" "}
-              <Typography>Житлові</Typography>
+              <Typography>Комунальний</Typography>
             </label>
           </div>
           <div className="mb-2">
             <label>
               <input
-                checked={buildingType.includes("public")}
-                onChange={() => handleBuildingType("public")}
+                checked={buildingType.includes("ОСББ")}
+                onChange={() => handleBuildingType("ОСББ")}
                 type="checkbox"
               />{" "}
-              <Typography>Громадські</Typography>
-            </label>
-          </div>
-          <div className="mb-2">
-            <label>
-              <input
-                checked={buildingType.includes("commercial")}
-                onChange={() => handleBuildingType("commercial")}
-                type="checkbox"
-              />{" "}
-              <Typography>Комерційні</Typography>
-            </label>
-          </div>
-          <div className="mb-2">
-            <label>
-              <input
-                checked={buildingType.includes("industrial")}
-                onChange={() => handleBuildingType("industrial")}
-                type="checkbox"
-              />{" "}
-              <Typography>Промислові</Typography>
+              <Typography>ОСББ</Typography>
             </label>
           </div>
         </div>
-        <div className="my-4">
+        {/* <div className="my-4">
           <Typography variant="small-title">
             Річне споживання (кВт·год/м²):
           </Typography>
@@ -157,7 +137,7 @@ const FiltersPanel = ({ onClose }: { onClose: () => void }) => {
               <Typography>200+</Typography>
             </label>
           </div>
-        </div>
+        </div> */}
         <div className="flex gap-[4px]">
           <Button variant="primary" onClick={resetFilters}>
             Скинути
