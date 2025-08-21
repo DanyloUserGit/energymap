@@ -41,7 +41,7 @@ const FiltersPanel = ({ onClose }: { onClose: () => void }) => {
   // };
 
   return (
-    <div className="bg-white p-4 rounded shadow-card w-128 z-50 overflow-y-auto">
+    <div className="h-full w-128 bg-white shadow-card p-4 rounded z-50">
       <Typography variant="title">Фільтри</Typography>
       <div className="my-4">
         <Typography variant="small-title">Клас енергоефективності:</Typography>
