@@ -1,14 +1,7 @@
 import axios from "axios";
-import type { LoaderState } from "../types";
-import { useLoaderStore } from "../store/loaderStore";
-import type { FeatureCollection, Geometry, GeoJsonProperties } from "geojson";
+import type { FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
 
 export class API {
-  // public loaderStore: LoaderState;
-  // constructor() {
-  //   this.loaderStore = useLoaderStore();
-  // }
-
   async getAllBuildings(): Promise<FeatureCollection<
     Geometry,
     GeoJsonProperties
