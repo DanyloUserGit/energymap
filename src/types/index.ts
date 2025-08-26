@@ -9,7 +9,6 @@ export type EnergyClasses =
   | "G"
   | "N";
 export const EnergyClassesMap = ["A", "A+", "B", "C", "D", "E", "F", "G", "N"];
-export type BuildingTypes = "ОСББ" | "Комунальний";
 
 export interface EnergyRange {
   label: string;
@@ -35,9 +34,9 @@ export type LoaderState = {
 };
 export type FilterState = {
   energyClass: EnergyClasses[];
-  buildingType: BuildingTypes[];
+  buildingType: string[];
   energyUsage: EnergyRange[];
-  setBuildingType: (types: BuildingTypes[]) => void;
+  setBuildingType: (types: string[]) => void;
   setEnergyUsage: (energyUsage: EnergyRange[]) => void;
   setEnergyClass: (energyClass: EnergyClasses[]) => void;
   resetFilters: () => void;
@@ -45,7 +44,7 @@ export type FilterState = {
 export interface BuildingModalProps {
   title: string;
   energyClass: EnergyClasses;
-  buildingType: BuildingTypes;
+  buildingType: string;
   energyUsage: number;
   address: string;
   buildingArea: number;

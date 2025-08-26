@@ -17,4 +17,15 @@ export class API {
       return null;
     }
   }
+  async getSectors():Promise<string[] | null>{
+    try {
+      const res = await axios.get("https://mep.city/api/sector/list/");
+      if(res.data){
+        return res.data.sectors;
+      }
+      return null;
+    } catch (error) {
+      return null
+    }
+  }
 }

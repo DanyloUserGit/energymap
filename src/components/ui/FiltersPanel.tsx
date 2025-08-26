@@ -1,12 +1,12 @@
+import { useEffect, useState } from "react";
 import { useFiltersStore } from "../../store/useFiltersStore";
 import {
   EnergyClassesMap,
-  type BuildingTypes,
   type EnergyClasses,
-  // type EnergyRange,
 } from "./../../types";
 import Button from "./Button";
 import Typography from "./Typoghraphy";
+import { API } from "../../http";
 
 const FiltersPanel = ({ onClose }: { onClose: () => void }) => {
   const {
@@ -18,6 +18,15 @@ const FiltersPanel = ({ onClose }: { onClose: () => void }) => {
     setEnergyClass,
     resetFilters,
   } = useFiltersStore();
+  const api = new API();
+  const [sectors, setSectors] = useState<string[] | null>(null);
+  useEffect(()=>{
+    const fetch = async () => {
+      const s = await api.getSectors();
+      setSectors(s);
+    }
+    fetch()
+  }, [sectors])
   const handleEnergyClass = (val: EnergyClasses) => {
     if (energyClass.includes(val)) {
       setEnergyClass(energyClass.filter((item) => item !== val));
@@ -25,7 +34,7 @@ const FiltersPanel = ({ onClose }: { onClose: () => void }) => {
       setEnergyClass([...energyClass, val]);
     }
   };
-  const handleBuildingType = (val: BuildingTypes) => {
+  const handleBuildingType = (val: string) => {
     if (buildingType.includes(val)) {
       setBuildingType(buildingType.filter((item) => item !== val));
     } else {
@@ -60,26 +69,18 @@ const FiltersPanel = ({ onClose }: { onClose: () => void }) => {
 
         <div className="my-4">
           <Typography variant="small-title">Тип будівлі:</Typography>
-          <div className="my-2">
+          {sectors ? sectors.map((item)=>(
+            <div className="my-2">
             <label>
               <input
-                checked={buildingType.includes("Комунальний")}
-                onChange={() => handleBuildingType("Комунальний")}
+                checked={buildingType.includes(item)}
+                onChange={() => handleBuildingType(item)}
                 type="checkbox"
               />{" "}
-              <Typography>Комунальний</Typography>
+              <Typography>{item}</Typography>
             </label>
           </div>
-          <div className="mb-2">
-            <label>
-              <input
-                checked={buildingType.includes("ОСББ")}
-                onChange={() => handleBuildingType("ОСББ")}
-                type="checkbox"
-              />{" "}
-              <Typography>ОСББ</Typography>
-            </label>
-          </div>
+          )) : ""}
         </div>
         {/* <div className="my-4">
           <Typography variant="small-title">

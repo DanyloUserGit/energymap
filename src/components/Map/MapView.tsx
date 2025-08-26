@@ -30,7 +30,7 @@ const MapView: React.FC = () => {
 
   const initialView = {
     center: [26.23, 50.62] as [number, number],
-    zoom: 12,
+    zoom: 14,
     pitch: 0,
     bearing: 0,
   };
@@ -84,9 +84,10 @@ const MapView: React.FC = () => {
       center: initialView.center,
       zoom: initialView.zoom,
       pitch: initialView.pitch,
-      minZoom: 10,
-      maxZoom: 17,
-      dragRotate: false,
+      minZoom: 12,
+      maxZoom: 18,
+      dragRotate: true,
+      pitchWithRotate:false,
       maxBounds: [
         [26.08479, 50.53599],
         [26.35171, 50.68295],
