@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type {
-  BuildingTypes,
   EnergyClasses,
   EnergyRange,
   FilterState,
@@ -13,7 +12,7 @@ export const useFiltersStore = create<FilterState>()(
       buildingType: [],
       energyUsage: [],
       energyClass: [],
-      setBuildingType: (buildingType: BuildingTypes[]) => set({ buildingType }),
+      setBuildingType: (buildingType: string[]) => set({ buildingType }),
       setEnergyUsage: (energyUsage: EnergyRange[]) => set({ energyUsage }),
       setEnergyClass: (energyClass: EnergyClasses[]) => set({ energyClass }),
       resetFilters: () =>
